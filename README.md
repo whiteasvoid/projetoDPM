@@ -13,8 +13,6 @@ Repositorio para o projeto da disciplina de Desenvolvimento de Produtos Multimed
 
 -> Fóruns moderados por especialistas nas diferentes áreas do conhecimento;
 
--> Integração com bases de dados científicas como SciELO e PubMed;
-
 -> Sistema para encontrar colaboradores para pesquisas acadêmicas;
 
 ## Autor

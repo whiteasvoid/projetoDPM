@@ -1,13 +1,79 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Projeto Multimedia</title>
+    <title>Reddit Academia</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Projeto Multimedia</h1>
+    <header>
+        <div class="container">
+            <!-- Logo e barra de busca -->
+            <div class="logo">RedditAcademia</div>
+            <input type="text" placeholder="Buscar...">
+            <!-- Botões de autenticação -->
+            <div class="auth-buttons">
+                <button id="login-btn">Entrar</button>
+                <button id="register-btn">Registar</button>
+            </div>
+        </div>
+    </header>
 
-    <p>Em cosntrução</p>
+    <!-- Conteúdo principal -->
+    <div class="container">
+        <div class="main-content">
+            <!-- Barra lateral esquerda -->
+            <div class="sidebar">
+                <!-- Menu de navegação -->
+                <h3>Menu</h3>
+                <ul>
+                    <li><a href="#">Início</a></li>
+                    <li><a href="#">Populares</a></li>
+                    <li><a href="#">Explorar</a></li>
+                </ul>
+                
+                <!-- Áreas acadêmicas -->
+                <h3>Áreas</h3>
+                <ul>
+                    <li><a href="#">Exatas</a></li>
+                    <li><a href="#">Biológicas</a></li>
+                    <li><a href="#">Humanas</a></li>
+                </ul>
+            </div>
+
+            <!-- Feed de posts -->
+            <div class="feed">
+                <!-- Filtros do feed -->
+                <div class="filters">
+                    <button class="filter-btn active">Populares</button>
+                    <button class="filter-btn">Recentes</button>
+                </div>
+
+                <!-- Post de exemplo -->
+                <div class="post">
+                    <div class="post-author">Utilizador Teste</div>
+                    <h3>Título do Post</h3>
+                    <p>Placeholder.</p>
+                    <!-- Ações do post -->
+                    <div class="post-actions">
+                        <button>Votar</button>
+                        <button>Comentar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Barra lateral direita -->
+            <div class="right-sidebar">
+                <div class="sidebar-box">
+                    <h3>Em Alta</h3>
+                    <p>Conteudo...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
 </body>
 </html>
