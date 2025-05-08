@@ -16,5 +16,5 @@ Repositorio para o projeto da disciplina de Desenvolvimento de Produtos Multimed
 -> Sistema para encontrar colaboradores para pesquisas acadêmicas;
 
 ## Autor
-João Curto
+João Curto,
 Lourenço Marques
