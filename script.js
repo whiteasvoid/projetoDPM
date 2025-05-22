@@ -1,437 +1,276 @@
-// Sistema de gestão de utilizadores
-document.addEventListener("DOMContentLoaded", function () {
-  // Dados de utilizadores
-  const users = [
-    // Conta temporária pré-configurada
-    {
-      name: "Utilizador Teste",
-      email: "teste@exemplo.com",
-      password: "123456",
-      area: "Ciências Exatas"
-    }
-  ];
+// Lista de utilizadores
+let users = [
+  {
+    name: "Utilizador Teste",
+    email: "teste@exemplo.com",
+    password: "123456",
+    area: "Ciências Exatas"
+  }
+];
 
-  // Variáveis para controlo de sessão
-  let loggedInUser = null;
+let currentUser = null;
+let postVotes = {}; // Para guardar os votos: {postId: {userEmail: true/false, totalVotes: number}}
 
-  // Cache de elementos DOM frequentemente utilizados
-  const elements = {
-    // Botões de autenticação
-    loginBtn: document.getElementById("login-btn"),
-    registerBtn: document.getElementById("register-btn"),
-    
-    // Modais
-    loginModal: document.getElementById("login-modal"),
-    
-    // Formulários
-    loginForm: document.getElementById("login-form"),
-    
-    // Filtros de conteúdo
-    filterBtns: document.querySelectorAll(".filter-btn"),
-    
-    // Área de autenticação no cabeçalho
-    authButtons: document.querySelector(".auth-buttons")
+document.addEventListener("DOMContentLoaded", function() {
+  
+  // Inicializar posts existentes
+  initializeExistingPosts();
+  
+  // Botões e elementos
+  let loginBtn = document.getElementById("login-btn");
+  let registerBtn = document.getElementById("register-btn");
+  let logoutBtn = document.getElementById("logout-btn");
+  let authButtons = document.querySelector(".auth-buttons");
+  let userInfo = document.getElementById("user-info");
+  let userName = document.getElementById("user-name");
+  let createPost = document.getElementById("create-post");
+  
+  // Modais
+  let loginModal = document.getElementById("login-modal");
+  let registerModal = document.getElementById("register-modal");
+  
+  // Formulários
+  let loginForm = document.getElementById("login-form");
+  let registerForm = document.getElementById("register-form");
+  let postForm = document.getElementById("post-form");
+  
+  // Eventos dos botões
+  loginBtn.onclick = function() {
+    showModal(loginModal);
   };
-
-  // ===== FUNÇÕES DE UTILIDADE =====
   
-  // Mostrar modal
-  function showModal(modal) {
-    modal.classList.remove("hidden");
-  }
+  registerBtn.onclick = function() {
+    showModal(registerModal);
+  };
   
-  // Esconder modal
-  function hideModal(modal) {
-    modal.classList.add("hidden");
-  }
-
-  // Verificar se o email já está registado
-  function isEmailRegistered(email) {
-    return users.some(user => user.email.toLowerCase() === email.toLowerCase());
-  }
-
-  // Autenticar utilizador
-  function authenticateUser(email, password) {
-    return users.find(user => 
-      user.email.toLowerCase() === email.toLowerCase() && 
-      user.password === password
-    );
-  }
-
-  // Gerar interface de utilizador autenticado
-  function updateUIForLoggedIn(user) {
-    // Atualizar área de autenticação no cabeçalho
-    elements.authButtons.innerHTML = `
-      <div class="user-info">
-        <span>Olá, ${user.name}</span>
-        <button id="logout-btn" class="btn-outline">Sair</button>
-      </div>
-    `;
-    
-    // Adicionar evento ao botão de terminar sessão
-    document.getElementById("logout-btn").addEventListener("click", logout);
-    
-    // Adicionar botão para criar publicações
-    const feed = document.querySelector(".feed");
-    if (!document.querySelector(".create-post")) {
-      const createPostElem = document.createElement("div");
-      createPostElem.className = "post create-post";
-      createPostElem.innerHTML = `
-        <h3>Criar Nova Publicação</h3>
-        <form id="post-form">
-          <div class="form-group">
-            <label for="post-title">Título</label>
-            <input type="text" id="post-title" required>
-          </div>
-          <div class="form-group">
-            <label for="post-content">Conteúdo</label>
-            <textarea id="post-content" rows="4" required></textarea>
-          </div>
-          <button type="submit" class="btn-primary">Publicar</button>
-        </form>
-      `;
-      feed.insertBefore(createPostElem, feed.firstChild.nextSibling);
-      
-      // Adicionar evento ao formulário de publicação
-      document.getElementById("post-form").addEventListener("submit", createPost);
-    }
-  }
-
-  // Gerar interface de utilizador não autenticado
-  function updateUIForLoggedOut() {
-    elements.authButtons.innerHTML = `
-      <button id="login-btn" class="btn-outline">Entrar</button>
-      <button id="register-btn" class="btn-primary">Registar</button>
-    `;
-    
-    // Recriar eventos para os novos botões
-    document.getElementById("login-btn").addEventListener("click", showLoginModal);
-    document.getElementById("register-btn").addEventListener("click", showRegisterModal);
-    
-    // Remover área de criação de publicação, se existir
-    const createPostElem = document.querySelector(".create-post");
-    if (createPostElem) {
-      createPostElem.remove();
-    }
-  }
-
-  // ===== MANIPULADORES DE EVENTOS =====
+  logoutBtn.onclick = function() {
+    currentUser = null;
+    showLoggedOut();
+    alert("Logout feito!");
+  };
   
-  // Mostrar modal de autenticação
-  function showLoginModal() {
-    showModal(elements.loginModal);
-  }
-  
-  // Mostrar modal de registo (criamos o HTML e o modal dinamicamente)
-  function showRegisterModal() {
-    // Criar modal de registo se não existir
-    if (!document.getElementById("register-modal")) {
-      const registerModal = document.createElement("div");
-      registerModal.id = "register-modal";
-      registerModal.className = "modal hidden";
-      registerModal.innerHTML = `
-        <div class="modal-content">
-          <span class="close">&times;</span>
-          <h2>Registar</h2>
-          <form id="register-form">
-            <div class="form-group">
-              <label for="register-name">Nome</label>
-              <input type="text" id="register-name" required>
-            </div>
-            <div class="form-group">
-              <label for="register-email">Email</label>
-              <input type="email" id="register-email" required>
-            </div>
-            <div class="form-group">
-              <label for="register-password">Senha</label>
-              <input type="password" id="register-password" required>
-            </div>
-            <div class="form-group">
-              <label for="register-area">Área de Interesse</label>
-              <select id="register-area" required>
-                <option value="Ciências Exatas">Ciências Exatas</option>
-                <option value="Ciências Biológicas">Ciências Biológicas</option>
-                <option value="Ciências Humanas">Ciências Humanas</option>
-                <option value="Engenharias">Engenharias</option>
-                <option value="Ciências da Saúde">Ciências da Saúde</option>
-              </select>
-            </div>
-            <button type="submit" class="btn-primary">Registar</button>
-          </form>
-        </div>
-      `;
-      document.body.appendChild(registerModal);
-      
-      // Adicionar evento ao botão de fechar
-      registerModal.querySelector(".close").addEventListener("click", function() {
-        hideModal(registerModal);
-      });
-      
-      // Adicionar evento ao formulário de registo
-      document.getElementById("register-form").addEventListener("submit", registerUser);
-    }
-    
-    showModal(document.getElementById("register-modal"));
-  }
-  
-  // Processar autenticação do utilizador
-  function handleLogin(e) {
+  // Eventos dos formulários
+  loginForm.onsubmit = function(e) {
     e.preventDefault();
     
-    const email = document.getElementById("login-email").value;
-    const password = document.getElementById("login-password").value;
+    let email = document.getElementById("login-email").value;
+    let password = document.getElementById("login-password").value;
     
-    const user = authenticateUser(email, password);
+    // Procurar utilizador
+    let user = users.find(u => u.email === email && u.password === password);
     
     if (user) {
-      loggedInUser = user;
-      updateUIForLoggedIn(user);
-      hideModal(elements.loginModal);
-      
-      // Limpar formulário
-      document.getElementById("login-form").reset();
-      
-      // Feedback de sucesso
-      alert("Autenticação realizada com sucesso!");
+      currentUser = user;
+      showLoggedIn();
+      hideModal(loginModal);
+      loginForm.reset();
+      alert("Login feito com sucesso!");
     } else {
-      alert("Email ou senha incorretos.");
+      alert("Email ou password errados!");
     }
-  }
+  };
   
-  // Registar novo utilizador
-  function registerUser(e) {
+  registerForm.onsubmit = function(e) {
     e.preventDefault();
     
-    const name = document.getElementById("register-name").value;
-    const email = document.getElementById("register-email").value;
-    const password = document.getElementById("register-password").value;
-    const area = document.getElementById("register-area").value;
+    let name = document.getElementById("register-name").value;
+    let email = document.getElementById("register-email").value;
+    let password = document.getElementById("register-password").value;
+    let area = document.getElementById("register-area").value;
     
-    if (isEmailRegistered(email)) {
-      alert("Este email já está registado.");
+    // Verificar se email já existe
+    if (users.find(u => u.email === email)) {
+      alert("Email já existe!");
       return;
     }
     
     // Adicionar novo utilizador
-    const newUser = { name, email, password, area };
+    let newUser = { name, email, password, area };
     users.push(newUser);
+    currentUser = newUser;
     
-    // Fazer autenticação com o novo utilizador
-    loggedInUser = newUser;
-    updateUIForLoggedIn(newUser);
-    
-    // Esconder modal de registo
-    hideModal(document.getElementById("register-modal"));
-    
-    // Limpar formulário
-    document.getElementById("register-form").reset();
-    
-    // Feedback de sucesso
-    alert("Registo realizado com sucesso!");
-  }
+    showLoggedIn();
+    hideModal(registerModal);
+    registerForm.reset();
+    alert("Registo feito com sucesso!");
+  };
   
-  // Terminar sessão de utilizador
-  function logout() {
-    loggedInUser = null;
-    updateUIForLoggedOut();
-    alert("Sessão terminada com sucesso!");
-  }
-  
-  // Criar nova publicação
-  function createPost(e) {
+  postForm.onsubmit = function(e) {
     e.preventDefault();
     
-    if (!loggedInUser) {
-      alert("Precisas de estar autenticado para criar uma publicação.");
+    let title = document.getElementById("post-title").value;
+    let content = document.getElementById("post-content").value;
+    
+    createNewPost(title, content);
+    postForm.reset();
+    alert("Post criado!");
+  };
+  
+  // Fechar modais
+  document.querySelectorAll(".close").forEach(btn => {
+    btn.onclick = function() {
+      let modal = this.closest(".modal");
+      hideModal(modal);
+    };
+  });
+  
+  // Filtros
+  document.querySelectorAll(".filter-btn").forEach(btn => {
+    btn.onclick = function() {
+      document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+      this.classList.add("active");
+    };
+  });
+  
+  // Funções para mostrar/esconder elementos
+  function showModal(modal) {
+    modal.classList.remove("hide");
+  }
+  
+  function hideModal(modal) {
+    modal.classList.add("hide");
+  }
+  
+  function showLoggedIn() {
+    // Esconder botões de auth
+    authButtons.classList.add("hide");
+    
+    // Mostrar info do utilizador
+    userInfo.classList.remove("hide");
+    userName.textContent = "Olá, " + currentUser.name;
+    
+    // Mostrar área de criar post
+    createPost.classList.remove("hide");
+  }
+  
+  function showLoggedOut() {
+    // Mostrar botões de auth
+    authButtons.classList.remove("hide");
+    
+    // Esconder info do utilizador
+    userInfo.classList.add("hide");
+    
+    // Esconder área de criar post
+    createPost.classList.add("hide");
+  }
+  
+  function initializeExistingPosts() {
+    // Dar ID aos posts existentes e adicionar funcionalidade de voto
+    let existingPosts = document.querySelectorAll(".post:not(.create-post)");
+    existingPosts.forEach((post, index) => {
+      let postId = "existing-" + index;
+      post.setAttribute("data-post-id", postId);
+      postVotes[postId] = { totalVotes: 0 };
+      
+      // Encontrar botão de voto
+      let voteBtn = post.querySelector(".action-btn");
+      if (voteBtn && voteBtn.textContent.includes("Votar")) {
+        voteBtn.className = "action-btn vote-btn";
+        voteBtn.onclick = function() {
+          handleVote(postId, this);
+        };
+      }
+    });
+  }
+  
+  function createNewPost(title, content) {
+    // Criar ID único para o post
+    let postId = Date.now().toString();
+    
+    // Criar novo elemento post
+    let postDiv = document.createElement("div");
+    postDiv.className = "post";
+    postDiv.setAttribute("data-post-id", postId);
+    
+    // Inicializar votos para este post
+    postVotes[postId] = { totalVotes: 0 };
+    
+    // Criar header do post
+    let postHeader = document.createElement("div");
+    postHeader.className = "post-header";
+    
+    let postAuthor = document.createElement("div");
+    postAuthor.className = "post-author";
+    postAuthor.textContent = currentUser.name;
+    
+    let postMeta = document.createElement("div");
+    postMeta.className = "post-meta";
+    postMeta.textContent = currentUser.area + " • agora";
+    
+    postHeader.appendChild(postAuthor);
+    postHeader.appendChild(postMeta);
+    
+    // Criar título
+    let postTitle = document.createElement("h3");
+    postTitle.textContent = title;
+    
+    // Criar conteúdo
+    let postContent = document.createElement("p");
+    postContent.textContent = content;
+    
+    // Criar ações do post
+    let postActions = document.createElement("div");
+    postActions.className = "post-actions";
+    
+    let voteBtn = document.createElement("button");
+    voteBtn.className = "action-btn vote-btn";
+    voteBtn.textContent = "Votar (0)";
+    voteBtn.onclick = function() {
+      handleVote(postId, this);
+    };
+    
+    let commentBtn = document.createElement("button");
+    commentBtn.className = "action-btn";
+    commentBtn.textContent = "Comentar (0)";
+    
+    let saveBtn = document.createElement("button");
+    saveBtn.className = "action-btn";
+    saveBtn.textContent = "Guardar";
+    
+    postActions.appendChild(voteBtn);
+    postActions.appendChild(commentBtn);
+    postActions.appendChild(saveBtn);
+    
+    // Montar o post
+    postDiv.appendChild(postHeader);
+    postDiv.appendChild(postTitle);
+    postDiv.appendChild(postContent);
+    postDiv.appendChild(postActions);
+    
+    // Adicionar ao feed
+    let feed = document.querySelector(".feed");
+    let firstPost = document.querySelector(".post:not(.create-post)");
+    if (firstPost) {
+      feed.insertBefore(postDiv, firstPost);
+    } else {
+      feed.appendChild(postDiv);
+    }
+  }
+  
+  function handleVote(postId, button) {
+    // Verificar se está logado
+    if (!currentUser) {
+      alert("Precisas fazer login para votar!");
+      console.log(postVotes);
       return;
     }
     
-    const title = document.getElementById("post-title").value;
-    const content = document.getElementById("post-content").value;
+    let userEmail = currentUser.email;
     
-    // Criar elemento de publicação
-    const postElement = document.createElement("div");
-    postElement.className = "post";
-    
-    // Obter data atual formatada
-    const now = new Date();
-    const timeAgo = "agora mesmo";
-    
-    postElement.innerHTML = `
-      <div class="post-header">
-        <div class="post-author">${loggedInUser.name}</div>
-        <div class="post-meta">${loggedInUser.area} • ${timeAgo}</div>
-      </div>
-      <h3>${title}</h3>
-      <p>${content}</p>
-      <div class="post-actions">
-        <button class="action-btn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <path d="M12 4.5L4 15H20L12 4.5Z" fill="currentColor"/>
-          </svg>
-          Votar (0)
-        </button>
-        <button class="action-btn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v10z" stroke="currentColor" stroke-width="2"/>
-          </svg>
-          Comentar (0)
-        </button>
-        <button class="action-btn">Guardar</button>
-      </div>
-    `;
-    
-    // Adicionar publicação ao feed
-    const feed = document.querySelector(".feed");
-    const firstPost = document.querySelector(".post:not(.create-post)");
-    if (firstPost) {
-      feed.insertBefore(postElement, firstPost);
+    // Verificar se o utilizador já votou neste post
+    if (postVotes[postId][userEmail]) {
+      // Remover voto
+      postVotes[postId][userEmail] = false;
+      postVotes[postId].totalVotes--;
+      button.classList.remove("voted");
     } else {
-      feed.appendChild(postElement);
+      // Adicionar voto
+      postVotes[postId][userEmail] = true;
+      postVotes[postId].totalVotes++;
+      button.classList.add("voted");
     }
     
-    // Limpar formulário
-    document.getElementById("post-form").reset();
-    
-    // Feedback de sucesso
-    alert("Publicação criada com sucesso!");
+    // Atualizar texto do botão
+    button.textContent = "Votar (" + postVotes[postId].totalVotes + ")";
   }
-
-  // ===== INICIALIZAÇÃO =====
-  
-  // Adicionar eventos aos modais
-  document.querySelectorAll(".modal .close").forEach(closeBtn => {
-    closeBtn.addEventListener("click", function() {
-      hideModal(this.closest(".modal"));
-    });
-  });
-  
-  // Eventos para os botões de autenticação
-  elements.loginBtn.addEventListener("click", showLoginModal);
-  elements.registerBtn.addEventListener("click", showRegisterModal);
-  
-  // Evento para o formulário de autenticação
-  elements.loginForm.addEventListener("submit", handleLogin);
-  
-  // Eventos para os botões de filtro
-  elements.filterBtns.forEach(btn => {
-    btn.addEventListener("click", function() {
-      // Remover classe 'active' de todos os botões
-      elements.filterBtns.forEach(b => b.classList.remove("active"));
-      
-      // Adicionar classe 'active' ao botão clicado
-      this.classList.add("active");
-      
-      // Fazer algo com o filtro (por exemplo, carregar publicações diferentes)
-      console.log("Filtro aplicado:", this.textContent);
-    });
-  });
-  
-  // Fechar modais ao clicar fora do conteúdo
-  window.addEventListener("click", function(e) {
-    document.querySelectorAll(".modal").forEach(modal => {
-      if (e.target === modal) {
-        hideModal(modal);
-      }
-    });
-  });
-
-  // Adicionar CSS para os novos elementos e estilos
-  const styleElement = document.createElement("style");
-  styleElement.textContent = `
-    /* Estilos para modal */
-    .modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0,0,0,0.5);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-    
-    .modal.hidden {
-      display: none;
-    }
-    
-    .modal-content {
-      background-color: white;
-      padding: 20px;
-      border-radius: 5px;
-      width: 80%;
-      max-width: 500px;
-      position: relative;
-    }
-    
-    .close {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      font-size: 20px;
-      cursor: pointer;
-    }
-    
-    /* Estilos para formulários */
-    .form-group {
-      margin-bottom: 15px;
-    }
-    
-    .form-group label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-    
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      box-sizing: border-box;
-    }
-    
-    /* Estilos para área do utilizador */
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    
-    /* Estilos para os botões */
-    .btn-primary {
-      background-color: #4b6584;
-      color: white;
-      padding: 8px 15px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    
-    .btn-outline {
-      background-color: transparent;
-      color: #f5f6fa;
-      padding: 8px 15px;
-      border: 1px solid #4b6584;
-      background-color: #4b6584;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    
-    /* Estilos para a criação de publicações */
-    .create-post {
-      margin-bottom: 20px;
-    }
-    
-    .create-post form {
-      margin-top: 15px;
-    }
-  `;
-  document.head.appendChild(styleElement);
-
-  console.log("Social Academic - Sistema inicializado");
 });

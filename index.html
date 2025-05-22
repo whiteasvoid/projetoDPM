@@ -18,10 +18,17 @@
                 Social Academic
             </div>
             <input type="text" placeholder="Procurar artigos ou pesquisadores...">
-            <!-- Botões de autenticação -->
+            
+            <!-- Botões de autenticação - mostrados por padrão -->
             <div class="auth-buttons">
                 <button id="login-btn" class="btn-outline">Entrar</button>
                 <button id="register-btn" class="btn-primary">Registrar</button>
+            </div>
+            
+            <!-- Info do utilizador - escondida por padrão -->
+            <div id="user-info" class="user-info hide">
+                <span id="user-name">Olá, </span>
+                <button id="logout-btn" class="btn-outline">Sair</button>
             </div>
         </div>
     </header>
@@ -64,7 +71,23 @@
                     <button class="filter-btn">Minha Área</button>
                 </div>
 
-                <!-- Post -->
+                <!-- Área para criar posts - escondida por padrão -->
+                <div id="create-post" class="post create-post hide">
+                    <h3>Criar Nova Publicação</h3>
+                    <form id="post-form">
+                        <div class="form-group">
+                            <label for="post-title">Título</label>
+                            <input type="text" id="post-title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="post-content">Conteúdo</label>
+                            <textarea id="post-content" rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary">Publicar</button>
+                    </form>
+                </div>
+
+                <!-- Post exemplo -->
                 <div class="post">
                     <div class="post-header">
                         <div class="post-author">Utilizador Teste</div>
@@ -109,8 +132,8 @@
         </div>
     </div>
 
-    <!-- Login -->
-    <div id="login-modal" class="modal hidden">
+    <!-- Modal de Login -->
+    <div id="login-modal" class="modal hide">
         <div class="modal-content">
             <span class="close">&times;</span>
             <h2>Entrar</h2>
@@ -124,6 +147,39 @@
                     <input type="password" id="login-password" required>
                 </div>
                 <button type="submit" class="btn-primary">Entrar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Registro -->
+    <div id="register-modal" class="modal hide">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Registar</h2>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="register-name">Nome</label>
+                    <input type="text" id="register-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-email">Email</label>
+                    <input type="email" id="register-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-password">Senha</label>
+                    <input type="password" id="register-password" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-area">Área de Interesse</label>
+                    <select id="register-area" required>
+                        <option value="Ciências Exatas">Ciências Exatas</option>
+                        <option value="Ciências Biológicas">Ciências Biológicas</option>
+                        <option value="Ciências Humanas">Ciências Humanas</option>
+                        <option value="Engenharias">Engenharias</option>
+                        <option value="Ciências da Saúde">Ciências da Saúde</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary">Registar</button>
             </form>
         </div>
     </div>
