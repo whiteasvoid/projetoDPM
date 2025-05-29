@@ -34,7 +34,7 @@ O Social Academic é construído seguindo uma arquitetura moderna e escalável:
   - Badges identificando área de especialidade e nível acadêmico
 
 - 🔄 **Sistema de Citações Integrado**
-  - Integração com bases de dados acadêmicas (Google Scholar, PubMed, etc.)
+  - Integração com bases de dados acadêmicas (FireBase)
   - Formatação automática de citações em diferentes padrões (APA, MLA, ABNT)
   - DOI linking automático
 
@@ -50,6 +50,66 @@ O Social Academic é construído seguindo uma arquitetura moderna e escalável:
 - 🔄 **Matchmaking para Colaboração**
   - Sistema para encontrar pesquisadores com interesses complementares
   - Ferramentas para iniciar projetos colaborativos
+
+- 🔄 **Google FireBase**
+  - Estrutura da base de dados:
+  {
+  "comments": {
+    "placeholderCommentId123": {
+      "text": null,           // Conteúdo do comentário (string)
+      "userId": null,         // ID do utilizador que fez o comentário (string, ex: Auth UID)
+      "postId": null,         // ID do post a que este comentário pertence (string)
+      "timestamp": null,      // Carimbo de data/hora da criação (número ou string ISO 8601)
+      "likesCount": null      // Número de 'gostos' no comentário (número)
+    }
+  },
+  "config": {
+    "maintenanceMode": null,  // Exemplo: true/false para modo de manutenção (boolean)
+    "appVersion": null,       // Exemplo: Versão atual da app (string)
+    "featureFlags": {         // Exemplo: Sub-objeto para 'feature flags'
+      "novaFuncionalidadeAtiva": null // boolean
+    }
+  },
+  "events": {
+     "placeholderEventId456": {
+       "name": null,         // Nome do evento (string)
+       "date": null,         // Data/hora do evento (número ou string)
+       "location": null,     // Localização (string)
+       "description": null,  // Descrição longa (string)
+       "organiserId": null,  // ID do organizador (string)
+       "attendeesCount": null // Número de participantes (número)
+     }
+  },
+  "posts": {
+    "placeholderPostId789": {
+      "title": null,          // Título do post (string)
+      "body": null,           // Conteúdo principal do post (string)
+      "authorId": null,       // ID do utilizador que criou o post (string)
+      "timestamp": null,      // Carimbo de data/hora da criação (número ou string)
+      "imageUrl": null,       // URL de uma imagem associada (string, pode ser null)
+      "likesCount": null,     // Número de 'gostos' no post (número)
+      "commentsCount": null,  // Número total de comentários no post (número)
+      "comments": {
+         "placeholderCommentIdDentroPost": { // ID de comentário dentro do post
+            "text": null,
+            "userId": null,
+            "timestamp": null
+         }
+      },
+    }
+  },
+  "users": {
+    "placeholderUserIdABC": {
+      "username": null,       // Nome de utilizador (string)
+      "email": null,          // Endereço de email (string, pode ser nulo se não for necessário)
+      "profileImageUrl": null,// URL da imagem de perfil (string, pode ser nulo)
+      "registrationDate": null,// Data de registo (número ou string)
+      "bio": null,            // Biografia curta (string, pode ser nulo)
+      "lastLogin": null       // Último login (número ou string)
+    }
+  }
+}
+
 
 ## 🖼️ Screenshots
 
