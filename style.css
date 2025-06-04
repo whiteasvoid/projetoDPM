@@ -1,232 +1,567 @@
+/* Define cores para usar em todo o site */
+:root {
+    --primary: #4a90e2; 
+    --secondary: #6c63ff; 
+    --dark: #2c3e50; 
+    --light: #f5f7fa; 
+    --accent: #e74c3c; 
+    --success: #2ecc71; 
+    --warning: #f39c12; 
+}
+
+/* Estiliza todos os elementos */
 * {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
 }
 
-/* Cores */
+/* Estiliza o corpo da página */
 body {
-    background-color: #eee;
+    background-color: var(--light); 
+    color: var(--dark); 
+    line-height: 1.6; 
 }
 
-/* Container para limitar largura */
-.container {
-    width: 100%;
-    margin: 0 auto;
-}
-
-/* Cabeçalho */
+/* Estiliza o cabeçalho */
 header {
-    background-color: #4b6584;
-    color: white;
-    padding: 10px 0;
+    background-color: white; 
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
+    position: sticky; 
+    top: 0; 
+    z-index: 100; 
 }
 
-header .container {
-    display: flex;
+/* Define a largura máxima do conteúdo */
+.container {
+    max-width: 1200px; 
+    margin: 0 auto; 
+    padding: 0 20px; 
 }
 
-/* Logo */
+/* Estiliza o conteúdo do cabeçalho */
+.header-content {
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 15px 0;
+}
+
+/* Estiliza o logotipo */
 .logo {
-    font-weight: bold;
+    display: flex; 
+    align-items: center;
+    font-weight: 700; 
+    font-size: 24px; 
+    color: var(--primary); 
 }
 
-/* Campos de busca */
-input {
-    padding: 10px;
-    width: 12em;
-    border: 4px solid #ccc;
-}
-
-/* Botões */
-button {
-    padding: 5px 10px;
-    background-color: #394047;
-    color: white;
-    border: none;
+/* Estiliza o texto dentro do logotipo */
+.logo span {
+    color: var(--dark); 
     margin-left: 5px;
-    cursor: pointer;
 }
 
-button:hover {
-    background-color: #273546;
+/* Estiliza a barra de pesquisa */
+.search-bar {
+    flex-grow: 1; 
+    margin: 0 30px; 
+    position: relative; 
 }
 
-/* Layout principal em 3 colunas */
-.main-content {
+/* Estiliza o campo de pesquisa */
+.search-bar input {
+    width: 100%; 
+    padding: 10px 15px; 
+    border-radius: 5px; 
+    border: 1px solid #ddd; 
+    font-size: 14px; 
+}
+
+/* Estiliza os botões de ações */
+.nav-actions {
     display: flex;
-    margin-top: 10px;
+    gap: 15px; 
+    align-items: center; 
 }
 
-/* Barra lateral */
-.sidebar {
-    width: 150px;
-    background-color: white;
-    padding: 10px;
-    margin-right: 10px;
+/* Estiliza o texto do perfil */
+.user-profile span {
+    font-weight: 600; 
+    margin-right: 10px; 
 }
 
-/* Títulos nas barras laterais */
-h3 {
-    margin-bottom: 10px;
-    color: #4b6584;
-}
-
-/* Listas nas barras laterais */
-ul {
-    list-style: none;
-}
-
-li {
-    margin-bottom: 5px;
-}
-
-a {
-    text-decoration: none;
-    color: #4b6584;
-}
-
-/* Feed principal */
-.feed {
-    flex-grow: 1;
-    margin-right: 10px;
-}
-
-/* Filtros do feed */
-.filters {
-    margin-bottom: 10px;
-}
-
-.filter-btn {
-    background-color: #ccc;
-}
-
-.filter-btn.active {
-    background-color: #4b6584;
-}
-
-/* Post */
-.post {
-    background-color: white;
-    padding: 10px;
-    margin-bottom: 10px;
-}
-
-.post-author {
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
-.post p {
-    margin: 10px 0;
-}
-
-/* Ações do post */
-.post-actions {
-    margin-top: 10px;
-}
-
-/* Barra lateral direita */
-.right-sidebar {
-    width: 150px;
-    background-color: white;
-    padding: 10px;
-}
-
-/* Caixa na barra lateral */
-.sidebar-box {
-    margin-bottom: 15px;
-}
-
-/* Estilos para modais */
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-.hide {
-    display: none !important;
-}
-
-.modal-content {
-    background: white;
-    padding: 20px;
+/* Estiliza botões genéricos */
+.btn {
+    padding: 8px 16px; 
     border-radius: 5px;
-    width: 80%;
-    max-width: 500px;
-    position: relative;
+    font-weight: 600; 
+    cursor: pointer; 
+    transition: all 0.3s ease;
+    font-size: 14px; 
 }
 
-.close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 20px;
-    cursor: pointer;
-}
-
-/* Estilos para formulários */
-.form-group {
-    margin-bottom: 15px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-}
-
-/* Estilos para área do utilizador */
-.user-info {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-/* Estilos para os botões */
+/* Estiliza botões primários */
 .btn-primary {
-    background: #4b6584;
-    color: white;
-    padding: 8px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+    background-color: var(--primary); 
+    color: white; 
+    border: none; 
 }
 
+/* Estiliza botões de contorno */
 .btn-outline {
-    background: #4b6584;
-    color: white;
-    padding: 8px 15px;
-    border: 1px solid #4b6584;
-    border-radius: 4px;
-    cursor: pointer;
+    background-color: transparent; 
+    color: var(--primary); 
+    border: 1px solid var(--primary);
 }
 
-/* Estilos para a criação de publicações */
-.create-post {
+/* Efeito ao passar o rato no botão primário */
+.btn-primary:hover {
+    background-color: #3a7bc8; 
+}
+
+/* Efeito ao passar o rato no botão de contorno */
+.btn-outline:hover {
+    background-color: #f0f5ff; 
+}
+
+/* Estiliza o conteúdo principal */
+.main-content {
+    display: flex; 
+    margin-top: 30px; 
+}
+
+/* Estiliza a barra lateral */
+.sidebar {
+    width: 250px; 
+    margin-right: 30px; 
+}
+
+/* Estiliza secções da barra lateral */
+.sidebar-section {
+    background-color: white; 
+    border-radius: 8px; 
+    padding: 20px; 
+    margin-bottom: 20px; 
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); 
+}
+
+/* Estiliza títulos da barra lateral */
+.sidebar-title {
+    font-size: 16px; 
+    font-weight: 600; 
+    margin-bottom: 15px; 
+    padding-bottom: 10px; 
+    border-bottom: 1px solid #eee; 
+}
+
+/* Estiliza a lista do menu lateral */
+.sidebar-menu {
+    list-style: none; 
+}
+
+/* Estiliza itens do menu */
+.sidebar-menu li {
+    margin-bottom: 10px; 
+}
+
+/* Estiliza links do menu */
+.sidebar-menu a {
+    text-decoration: none; 
+    color: var(--dark); 
+    display: flex; 
+    align-items: center; 
+    padding: 8px 0; 
+    transition: color 0.3s ease; 
+}
+
+/* Efeito ao passar o rato nos links */
+.sidebar-menu a:hover {
+    color: var(--primary); 
+}
+
+/* Estiliza ícones do menu */
+.sidebar-menu i {
+    margin-right: 10px; 
+    width: 20px; 
+    text-align: center; 
+}
+
+/* Estiliza badges (ex.: número de notificações) */
+.badge {
+    background-color: #e0e7ff; 
+    color: var(--primary); 
+    padding: 2px 8px; 
+    border-radius: 10px; 
+    font-size: 12px; 
+    margin-left: auto; 
+}
+
+/* Estiliza a área dos posts */
+.feed {
+    flex-grow: 1; 
+}
+
+/* Estiliza o cabeçalho dos posts */
+.feed-header {
+    background-color: white; 
+    border-radius: 8px; 
+    padding: 15px 20px; 
+    margin-bottom: 20px; 
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    display: flex; 
+    justify-content: space-between; 
+}
+
+/* Estiliza os filtros */
+.feed-filters {
+    display: flex; 
+    gap: 15px; 
+    align-items: center; 
+}
+
+/* Estiliza botões de filtro */
+.filter-btn {
+    padding: 8px 15px; 
+    border-radius: 5px;
+    font-weight: 500; 
+    font-size: 14px; 
+    background-color: transparent; 
+    cursor: pointer; 
+    transition: all 0.3s ease; 
+}
+
+/* Estiliza botão de filtro ativo */
+.filter-btn.active {
+    background-color: var(--primary); 
+    color: white; 
+    border: none; 
+}
+
+/* Estiliza botões de filtro não ativos */
+.filter-btn:not(.active) {
+    border: 1px solid #ddd; 
+}
+
+/* Efeito ao passar o rato nos filtros */
+.filter-btn:hover:not(.active) {
+    background-color: #f5f7fa; 
+}
+
+/* Estiliza o botão de criar post */
+.create-post-btn {
+    padding: 8px 16px; 
+}
+
+/* Estiliza os cartões de posts */
+.post-card {
+    background-color: white; 
+    border-radius: 8px; 
+    margin-bottom: 20px; 
+    padding: 20px; 
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); 
+}
+
+/* Estiliza o cabeçalho do post */
+.post-header {
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between;
+    margin-bottom: 15px; 
+}
+
+/* Estiliza o autor do post */
+.post-author {
+    font-weight: 600; 
+    display: flex; 
+    align-items: center; 
+}
+
+/* Estiliza o selo de verificado */
+.verified-badge {
+    background-color: var(--success);
+    color: white; 
+    font-size: 10px; 
+    padding: 2px 6px; 
+    border-radius: 3px; 
+    margin-left: 5px; 
+}
+
+/* Estiliza metadados do post */
+.post-meta {
+    color: #666; 
+    font-size: 13px; 
+}
+
+/* Estiliza o título do post */
+.post-content h3 {
+    font-size: 18px; 
+    margin-bottom: 10px; 
+}
+
+/* Estiliza o texto do post */
+.post-content p {
+    margin-bottom: 15px; 
+    font-size: 15px; 
+}
+
+/* Estiliza as tags do post */
+.post-tags {
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 10px; 
+    margin-bottom: 15px; 
+}
+
+/* Estiliza cada tag */
+.tag {
+    background-color: #f0f5ff; 
+    color: var(--primary); 
+    padding: 4px 10px; 
+    border-radius: 5px; 
+    font-size: 12px; 
+    font-weight: 500; 
+}
+
+/* Estiliza as ações do post */
+.post-actions {
+    display: flex; 
+    gap: 20px; 
+    padding-top: 15px; 
+    border-top: 1px solid #eee; 
+}
+
+/* Estiliza botões de ação */
+.action-btn {
+    display: flex; 
+    align-items: center; 
+    gap: 5px;
+    background: none; 
+    border: none; 
+    color: #666; 
+    font-size: 14px; 
+    cursor: pointer; 
+    transition: color 0.3s ease; 
+}
+
+/* Efeito ao passar o rato nos botões de ação */
+.action-btn:hover {
+    color: var(--primary); 
+}
+
+/* Estiliza citações */
+.citation {
+    background-color: #f5f7fa; 
+    border-left: 3px solid var(--primary); 
+    padding: 15px; 
+    margin-bottom: 15px; 
+    font-size: 14px; 
+}
+
+/* Estiliza links de citações */
+.citation-link {
+    color: var(--primary); 
+    text-decoration: none; 
+    display: block; 
+    margin-top: 10px;
+    font-weight: 500;
+}
+
+/* Estiliza a barra lateral direita */
+.trending-sidebar {
+    width: 300px; 
+    margin-left: 30px; 
+}
+
+/* Estiliza cartões da barra lateral direita */
+.trending-card {
+    background-color: white; 
+    border-radius: 8px; 
+    margin-bottom: 20px; 
+    padding: 20px; 
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); 
+}
+
+/* Estiliza títulos da barra lateral direita */
+.trending-title {
+    font-size: 16px; 
+    font-weight: 600; 
+    margin-bottom: 15px; 
+    padding-bottom: 10px; 
+    border-bottom: 1px solid #eee; 
+}
+
+/* Estiliza itens em alta */
+.trending-item {
+    display: flex; 
+    gap: 10px; 
+    margin-bottom: 15px; 
+    padding-bottom: 15px; 
+    border-bottom: 1px solid #eee; 
+}
+
+/* Remove a borda do último item */
+.trending-item:last-child {
+    margin-bottom: 0; 
+    padding-bottom: 0; 
+    border-bottom: none; 
+}
+
+/* Estiliza números dos itens em alta */
+.trending-number {
+    font-weight: 700; 
+    color: #aaa; 
+    font-size: 18px; 
+}
+
+/* Estiliza links dos itens em alta */
+.trending-content a {
+    color: var(--dark); 
+    text-decoration: none; 
+    font-weight: 500; 
+    font-size: 14px; 
+    margin-bottom: 5px; 
+    display: block; 
+    transition: color 0.3s ease; 
+}
+
+/* Efeito ao passar o rato nos links */
+.trending-content a:hover {
+    color: var(--primary); 
+}
+
+/* Estiliza metadados dos itens em alta */
+.trending-meta {
+    color: #666; 
+    font-size: 12px;
+}
+
+/* Estiliza o cartão de colaboração */
+.collaboration-card {
+    background: linear-gradient(to right, var(--primary), var(--secondary)); 
+    border-radius: 8px; 
+    padding: 20px; 
+    color: white; 
+}
+
+/* Estiliza o título do cartão de colaboração */
+.collaboration-title {
+    font-size: 16px; 
+    font-weight: 600; 
+    margin-bottom: 10px; 
+}
+
+/* Estiliza a descrição do cartão de colaboração */
+.collaboration-desc {
+    margin-bottom: 15px;
+    font-size: 14px; 
+    opacity: 0.9; 
+}
+
+/* Estiliza botão branco */
+.btn-white {
+    background-color: white; 
+    color: var(--primary); 
+    border: none; 
+    font-weight: 600; 
+    display: block; 
+    width: 100%; 
+    text-align: center; 
+    padding: 10px; 
+    border-radius: 5px; 
+    text-decoration: none; 
+    transition: all 0.3s ease; 
+}
+
+/* Efeito ao passar o rato no botão branco */
+.btn-white:hover {
+    background-color: #f0f5ff; 
+}
+
+/* Estiliza botão de verificação */
+.verification-btn {
+    display: block; 
+    text-decoration: none; 
+    text-align: center; 
+    color: white; 
+}
+
+/* Estiliza janelas modais */
+.modal {
+    display: none; 
+    position: fixed;
+    z-index: 200; 
+    left: 0;
+    top: 0; 
+    width: 100%; 
+    height: 100%; 
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Estiliza o conteúdo das janelas */
+.modal-content {
+    background-color: white; 
+    margin: 10% auto; 
+    padding: 30px; 
+    border-radius: 8px; 
+    width: 400px; 
+    max-width: 90%;
+}
+
+/* Estiliza o botão de fechar modal */
+.close {
+    color: #aaa; 
+    float: right; 
+    font-size: 28px; 
+    font-weight: bold; 
+    cursor: pointer; 
+}
+
+/* Efeito ao passar o rato no botão de fechar */
+.close:hover {
+    color: var(--dark); 
+}
+
+/* Estiliza grupos de formulário */
+.form-group {
     margin-bottom: 20px;
 }
 
-/* Estilos para botão de votar */
-.vote-btn.voted {
-    background-color: #27ae60 !important;
-    color: white;
+/* Estiliza etiquetas dos formulários */
+.form-group label {
+    display: block; 
+    margin-bottom: 8px;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+/* Estiliza campos de formulário */
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%; 
+    padding: 10px; 
+    border: 1px solid #ddd; 
+    border-radius: 5px; 
+    font-size: 14px; 
+}
+
+/* Estiliza a área de texto */
+.form-group textarea {
+    resize: vertical; 
+    min-height: 80px; 
+}
+
+/* Estiliza as ações do formulário */
+.form-actions {
+    display: flex; 
+    justify-content: flex-end; 
+    gap: 10px; 
+    margin-top: 20px; 
+}
+
+/* Classe para esconder elementos */
+.hidden {
+    display: none !important; 
 }

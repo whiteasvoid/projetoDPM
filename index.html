@@ -1,189 +1,223 @@
+<!-- Esta é a página principal do site -->
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt">
+
 <head>
+    <!-- Define o tipo de caracteres para mostrar letras com acentos -->
     <meta charset="UTF-8">
+    <!-- Faz a página ajustar-se ao tamanho do ecrã -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Social Academic</title>
+    <!-- Título da página -->
+    <title>SocialAcademia</title>
+    <!-- Liga o ficheiro de estilos CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
+    <!-- Cabeçalho da página -->
     <header>
         <div class="container">
-            <!-- Logo e barra de busca -->
-            <div class="logo">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" fill="#4a90e2"/>
-                    <path d="M15 11.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5zm-6 0a2.5 2.5 0 100 5 2.5 2.5 0 000-5z" fill="white"/>
-                </svg>
-                Social Academic
-            </div>
-            <input type="text" placeholder="Procurar artigos ou pesquisadores...">
-            
-            <!-- Botões de autenticação - mostrados por padrão -->
-            <div class="auth-buttons">
-                <button id="login-btn" class="btn-outline">Entrar</button>
-                <button id="register-btn" class="btn-primary">Registrar</button>
-            </div>
-            
-            <!-- Info do utilizador - escondida por padrão -->
-            <div id="user-info" class="user-info hide">
-                <span id="user-name">Olá, </span>
-                <button id="logout-btn" class="btn-outline">Sair</button>
+            <div class="header-content">
+                <!-- Logotipo do site -->
+                <div class="logo">Social<span>Academia</span></div>
+                <!-- Barra de pesquisa -->
+                <div class="search-bar">
+                    <input type="text" placeholder="Pesquisar artigos, autores, áreas...">
+                </div>
+                <!-- Botões e perfil do utilizador -->
+                <div class="nav-actions">
+                    <!-- Botões para entrar e registar -->
+                    <div class="auth-buttons" id="auth-buttons">
+                        <button class="btn btn-primary" id="login-btn">Entrar</button>
+                        <button class="btn btn-outline" id="register-btn">Registar</button>
+                    </div>
+                    <!-- Área do perfil, escondida até o utilizador fazer login -->
+                    <div class="user-profile hidden" id="user-profile">
+                        <span id="username-display"></span>
+                        <button class="btn btn-outline" id="logout-btn">Sair</button>
+                    </div>
+                </div>
             </div>
         </div>
     </header>
 
-    <!-- Conteúdo principal -->
-    <div class="container">
-        <div class="main-content">
-            <!-- Barra lateral esquerda -->
-            <div class="sidebar">
-                <!-- Navegação -->
-                <div class="sidebar-section">
-                    <h3>Menu</h3>
-                    <ul>
-                        <li><a href="#"><i>🏠</i> Início</a></li>
-                        <li><a href="#"><i>📈</i> Populares</a></li>
-                        <li><a href="#"><i>🔍</i> Explorar</a></li>
-                        <li><a href="#"><i>🔔</i> Notificações</a></li>
-                    </ul>
-                </div>
-                
-                <!-- Áreas acadêmicas -->
-                <div class="sidebar-section">
-                    <h3>Áreas</h3>
-                    <ul>
-                        <li><a href="#">Ciências Exatas</a></li>
-                        <li><a href="#">Ciências Biológicas</a></li>
-                        <li><a href="#">Ciências Humanas</a></li>
-                        <li><a href="#">Engenharias</a></li>
-                        <li><a href="#">Ciências da Saúde</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Feed de posts -->
-            <div class="feed">
-                <!-- Filtros do feed -->
-                <div class="filters">
-                    <button class="filter-btn active">Populares</button>
-                    <button class="filter-btn">Recentes</button>
-                    <button class="filter-btn">Minha Área</button>
-                </div>
-
-                <!-- Área para criar posts - escondida por padrão -->
-                <div id="create-post" class="post create-post hide">
-                    <h3>Criar Nova Publicação</h3>
-                    <form id="post-form">
-                        <div class="form-group">
-                            <label for="post-title">Título</label>
-                            <input type="text" id="post-title" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="post-content">Conteúdo</label>
-                            <textarea id="post-content" rows="4" required></textarea>
-                        </div>
-                        <button type="submit" class="btn-primary">Publicar</button>
+    <!-- Janela para fazer login -->
+    <div class="modal" id="login-modal">
+        <div class="modal-content">
+            <!-- Botão para fechar a janela -->
+            <span class="close">×</span>
+            <h2>Entrar</h2>
+            <!-- Formulário de login -->
+            <div id="login-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <form id="login-form">
+                        <input type="email" id="login-email" placeholder="Email" required>
+                        <input type="password" id="login-password" placeholder="Palavra-passe" required>
+                        <button type="submit" class="btn btn-primary">Entrar</button>
                     </form>
                 </div>
-
-                <!-- Post exemplo -->
-                <div class="post">
-                    <div class="post-header">
-                        <div class="post-author">Utilizador Teste</div>
-                        <div class="post-meta">Ciências Exatas • 1h atrás</div>
-                    </div>
-                    <h3>Título do Post</h3>
-                    <p>Teste</p>
-                    <!-- Ações do post -->
-                    <div class="post-actions">
-                        <button class="action-btn">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                                <path d="M12 4.5L4 15H20L12 4.5Z" fill="currentColor"/>
-                            </svg>
-                            Votar (0)
-                        </button>
-                        <button class="action-btn">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                                <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v10z" stroke="currentColor" stroke-width="2"/>
-                            </svg>
-                            Comentar (0)
-                        </button>
-                        <button class="action-btn">Guardar</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Barra lateral direita -->
-            <div class="right-sidebar">
-                <div class="sidebar-box">
-                    <h3>Em Alta</h3>
-                    <ul class="trending-list">
-                        <li>Exemplo 1</li>
-                        <li>Exemplo 2</li>
-                        <li>Exemplo 3</li>
-                    </ul>
-                </div>
-                <div class="sidebar-box">
-                    <h3>Eventos</h3>
-                    <p>Exemplo de Evento - 05/09/2025</p>
-                </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal de Login -->
-    <div id="login-modal" class="modal hide">
+    <!-- Janela para registar -->
+    <div class="modal" id="register-modal">
         <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Entrar</h2>
-            <form id="login-form">
-                <div class="form-group">
-                    <label for="login-email">Email</label>
-                    <input type="email" id="login-email" required>
-                </div>
-                <div class="form-group">
-                    <label for="login-password">Senha</label>
-                    <input type="password" id="login-password" required>
-                </div>
-                <button type="submit" class="btn-primary">Entrar</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal de Registro -->
-    <div id="register-modal" class="modal hide">
-        <div class="modal-content">
-            <span class="close">&times;</span>
+            <!-- Botão para fechar a janela -->
+            <span class="close">×</span>
             <h2>Registar</h2>
-            <form id="register-form">
-                <div class="form-group">
-                    <label for="register-name">Nome</label>
-                    <input type="text" id="register-name" required>
+            <!-- Formulário de registo -->
+            <div id="register-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <form id="register-form">
+                        <input type="text" id="register-name" placeholder="Nome" required>
+                        <input type="email" id="register-email" placeholder="Email" required>
+                        <input type="password" id="register-password" placeholder="Palavra-passe" required>
+                        <input type="text" id="register-area" placeholder="Área de estudo" required>
+                        <button type="submit" class="btn btn-primary">Registar</button>
+                    </form>
                 </div>
-                <div class="form-group">
-                    <label for="register-email">Email</label>
-                    <input type="email" id="register-email" required>
-                </div>
-                <div class="form-group">
-                    <label for="register-password">Senha</label>
-                    <input type="password" id="register-password" required>
-                </div>
-                <div class="form-group">
-                    <label for="register-area">Área de Interesse</label>
-                    <select id="register-area" required>
-                        <option value="Ciências Exatas">Ciências Exatas</option>
-                        <option value="Ciências Biológicas">Ciências Biológicas</option>
-                        <option value="Ciências Humanas">Ciências Humanas</option>
-                        <option value="Engenharias">Engenharias</option>
-                        <option value="Ciências da Saúde">Ciências da Saúde</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn-primary">Registar</button>
+            </div>
             </form>
         </div>
     </div>
 
+    <!-- Conteúdo principal -->
+    <main class="container main-content">
+        <!-- Barra lateral esquerda -->
+        <aside class="sidebar">
+            <!-- Secção de navegação -->
+            <div class="sidebar-section">
+                <h2 class="sidebar-title">Navegação</h2>
+                <ul class="sidebar-menu">
+                    <li><a href="#" data-area="all">🏠 Página Inicial</a></li>
+                    <li><a href="#" data-area="populares">📈 Populares</a></li>
+                    <li><a href="#" data-area="explorar">🔍 Explorar Áreas</a></li>
+                    <li><a href="#" id="notifications-link">🔔 Notificações <span class="badge"
+                                id="notification-badge">0</span></a></li>
+                    <li><a href="#" data-area="saved">📂 Meus Artigos Guardados</a></li>
+                    <li><a href="#" data-area="my-posts">🧪 Minhas Pesquisas</a></li>
+                </ul>
+            </div>
+            <!-- Secção para mostrar notificações -->
+            <div class="sidebar-section" id="notifications-list" style="display: none;">
+                <h2 class="sidebar-title">Notificações</h2>
+                <ul class="sidebar-menu" id="notifications-container"></ul>
+            </div>
+            <!-- Secção de áreas do conhecimento -->
+            <div class="sidebar-section">
+                <h2 class="sidebar-title">Áreas do Conhecimento</h2>
+                <ul class="sidebar-menu">
+                    <li><a href="#" data-area="Ciências Exatas">Ciências Exatas</a></li>
+                    <li><a href="#" data-area="Ciências Biológicas">Ciências Biológicas</a></li>
+                    <li><a href="#" data-area="Ciências Humanas">Ciências Humanas</a></li>
+                    <li><a href="#" data-area="Engenharias">Engenharias</a></li>
+                    <li><a href="#" data-area="Ciências da Saúde">Ciências da Saúde</a></li>
+                    <li><a href="#" data-area="Ciências Sociais">Ciências Sociais</a></li>
+                    <li><a href="#">Ver todas...</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Área dos posts -->
+        <section class="feed">
+            <!-- Cabeçalho com filtros -->
+            <div class="feed-header">
+                <div class="feed-filters">
+                    <button class="filter-btn active" data-filter="populares">Populares</button>
+                    <button class="filter-btn" data-filter="recentes">Recentes</button>
+                    <button class="filter-btn" data-filter="minha-area">Minha Área</button>
+                    <button class="filter-btn" data-filter="verificados">Artigos Verificados</button>
+                </div>
+                <!-- Botão para criar post, escondido até login -->
+                <button class="btn btn-primary create-post-btn hidden" id="create-post-btn">Criar Publicação</button>
+            </div>
+
+            <!-- Formulário de novo post -->
+            <div id="post-form-container" class="hidden">
+                <form id="post-form">
+                    <input type="text" id="post-title" placeholder="Título" required>
+                    <textarea id="post-content" placeholder="Escreve o teu post..." required></textarea>
+                    <input type="text" id="post-area" placeholder="Área (ex: Física)" required>
+                    <input type="text" id="post-tags" placeholder="Tags (separadas por vírgulas)">
+                    <input type="text" id="post-citation" placeholder="Citação (opcional)">
+                    <input type="url" id="post-citation-link" placeholder="Link da citação (opcional)">
+                    <button type="submit" class="btn btn-primary">Publicar</button>
+                    <button type="button" id="cancel-post-btn" class="btn btn-secondary">Cancelar</button>
+                </form>
+            </div>
+
+            <!-- Área onde os posts aparecem -->
+            <div id="posts-container"></div>
+        </section>
+
+        <!-- Barra lateral direita -->
+        <aside class="trending-sidebar">
+            <!-- Secção de artigos em alta -->
+            <div class="trending-card" id="trending-articles">
+                <h2 class="trending-title">Artigos em Alta</h2>
+            </div>
+            <!-- Secção de eventos -->
+            <div class="trending-card" id="upcoming-events">
+                <h2 class="trending-title">Conferências & Eventos</h2>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Modelo para criar posts -->
+    <template id="post-template">
+        <div class="post-card" data-post-id="">
+            <div class="post-header">
+                <div class="post-author">
+                    <span class="author-name"></span>
+                    <span class="verified-badge hidden">PhD Verificado</span>
+                    <span class="post-meta post-area"></span>
+                    <span class="post-meta"> • </span>
+                    <span class="post-meta post-time"></span>
+                </div>
+            </div>
+            <div class="post-content">
+                <h3 class="post-title"></h3>
+                <p class="post-text"></p>
+                <div class="post-tags"></div>
+                <div class="citation hidden">
+                    <p class="citation-text"></p>
+                    <a href="#" class="citation-link hidden">Acessar artigo completo</a>
+                </div>
+            </div>
+            <div class="post-actions">
+                <button class="action-btn vote-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 19V5m0 0l-7 7m7-7l7 7" />
+                    </svg>
+                    <span class="vote-count">0</span> votos
+                </button>
+                <button class="action-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                    <span class="comment-count">0</span> comentários
+                </button>
+                <button class="action-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+                    </svg>
+                    Guardar
+                </button>
+                <button class="action-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 12h16m-7-6v12" />
+                    </svg>
+                    Partilhar
+                </button>
+            </div>
+        </div>
+    </template>
+
+    <!-- Liga os ficheiros JavaScript -->
     <script src="script.js"></script>
 </body>
+
 </html>
