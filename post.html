@@ -1,0 +1,76 @@
+<!-- Esta é a página para mostrar os detalhes de um post -->
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Post - SocialAcademia</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Cabeçalho da página -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <!-- Logotipo do site -->
+                <div class="logo">Reddit<span>Academia</span></div>
+                <!-- Botão para voltar à página principal -->
+                <div class="nav-actions">
+                    <a href="index.html" class="btn btn-primary">Voltar</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Conteúdo principal -->
+    <main class="container main-content">
+        <!-- Área para mostrar o post -->
+        <section class="feed" id="post-container">
+            <!-- Mensagem enquanto carrega -->
+            <div id="loading-message" class="post-card">
+                <p>A carregar post...</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modelo para mostrar o post -->
+    <template id="post-template">
+        <div class="post-card" data-post-id="">
+            <div class="post-header">
+                <div class="post-author">
+                    <span class="author-name"></span>
+                    <span class="verified-badge hidden">PhD Verificado</span>
+                    <span class="post-meta post-area"></span>
+                    <span class="post-meta"> • </span>
+                    <span class="post-meta post-time"></span>
+                </div>
+            </div>
+            <div class="post-content">
+                <h3 class="post-title"></h3>
+                <p class="post-text"></p>
+                <div class="post-tags"></div>
+                <div class="citation hidden">
+                    <p class="citation-text"></p>
+                    <a href="#" class="citation-link hidden">Acessar artigo completo</a>
+                </div>
+            </div>
+            <div class="post-actions">
+                <button class="action-btn vote-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 19V5m0 0l-7 7m7-7l7 7"/>
+                    </svg>
+                    <span class="vote-count">0</span> votos
+                </button>
+                <button class="action-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    </svg>
+                    <span class="comment-count">0</span> comentários
+                </button>
+            </div>
+        </div>
+    </template>
+
+    <script src="scripts/post.js"></script>
+</body>
+</html>

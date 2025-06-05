@@ -1,276 +1,185 @@
-// Lista de utilizadores
-let users = [
-  {
-    name: "Utilizador Teste",
-    email: "teste@exemplo.com",
-    password: "123456",
-    area: "Ciências Exatas"
-  }
-];
+// Link da Firebase
+var URL_FIREBASE = "https://socialacademic-2d6ee-default-rtdb.europe-west1.firebasedatabase.app/";
 
-let currentUser = null;
-let postVotes = {}; // Para guardar os votos: {postId: {userEmail: true/false, totalVotes: number}}
+// Guardar os dados de login do utilizador
+// Inicialmente, o utilizador é null (não está logado)
+var utilizador = null;
 
-document.addEventListener("DOMContentLoaded", function() {
-  
-  // Inicializar posts existentes
-  initializeExistingPosts();
-  
-  // Botões e elementos
-  let loginBtn = document.getElementById("login-btn");
-  let registerBtn = document.getElementById("register-btn");
-  let logoutBtn = document.getElementById("logout-btn");
-  let authButtons = document.querySelector(".auth-buttons");
-  let userInfo = document.getElementById("user-info");
-  let userName = document.getElementById("user-name");
-  let createPost = document.getElementById("create-post");
-  
-  // Modais
-  let loginModal = document.getElementById("login-modal");
-  let registerModal = document.getElementById("register-modal");
-  
-  // Formulários
-  let loginForm = document.getElementById("login-form");
-  let registerForm = document.getElementById("register-form");
-  let postForm = document.getElementById("post-form");
-  
-  // Eventos dos botões
-  loginBtn.onclick = function() {
-    showModal(loginModal);
-  };
-  
-  registerBtn.onclick = function() {
-    showModal(registerModal);
-  };
-  
-  logoutBtn.onclick = function() {
-    currentUser = null;
-    showLoggedOut();
-    alert("Logout feito!");
-  };
-  
-  // Eventos dos formulários
-  loginForm.onsubmit = function(e) {
-    e.preventDefault();
-    
-    let email = document.getElementById("login-email").value;
-    let password = document.getElementById("login-password").value;
-    
-    // Procurar utilizador
-    let user = users.find(u => u.email === email && u.password === password);
-    
-    if (user) {
-      currentUser = user;
-      showLoggedIn();
-      hideModal(loginModal);
-      loginForm.reset();
-      alert("Login feito com sucesso!");
-    } else {
-      alert("Email ou password errados!");
+// Função que começa a aplicação
+function comecar() {
+    console.log("Social Academic está a iniciar.");
+    try {
+        // Carrega posts, artigos, eventos e notificações
+        carregarPosts("populares");
+        carregarArtigosAlta();
+        carregarEventos();
+        carregarNotificacoes();
+        configurarBotoes();
+
+        // Verificar se já existe um utilizador guardado na sessão
+        console.log("A verificar utilizador na sessão.");
+        var dadosUtilizador = sessionStorage.getItem("utilizador");
+        if (dadosUtilizador) {
+            utilizador = JSON.parse(dadosUtilizador);
+            atualizarInterface();
+            console.log("Utilizador encontrado: " + utilizador.nome);
+        }
+    } catch (erro) {
+        console.error("Erro: ", erro);
     }
-  };
-  
-  registerForm.onsubmit = function(e) {
-    e.preventDefault();
-    
-    let name = document.getElementById("register-name").value;
-    let email = document.getElementById("register-email").value;
-    let password = document.getElementById("register-password").value;
-    let area = document.getElementById("register-area").value;
-    
-    // Verificar se email já existe
-    if (users.find(u => u.email === email)) {
-      alert("Email já existe!");
-      return;
+}
+
+// Função para ligar todos os eventos dos botões
+function configurarBotoes() {
+    try {
+        // Pega os elementos da página
+        var botaoEntrar = document.getElementById("login-btn");
+        var botaoRegistar = document.getElementById("register-btn");
+        var botaoSair = document.getElementById("logout-btn");
+        var janelaLogin = document.getElementById("login-modal");
+        var janelaRegisto = document.getElementById("register-modal");
+        var formLogin = document.getElementById("login-form");
+        var formRegisto = document.getElementById("register-form");
+        var botaoCriar = document.getElementById("create-post-btn");
+        var formPost = document.getElementById("post-form-container");
+        var formulario = document.getElementById("post-form");
+        var botaoCancelar = document.getElementById("cancel-post-btn");
+        var linkNotificacoes = document.getElementById("notifications-link");
+        var areaNotificacoes = document.getElementById("notifications-list");
+        var botoesFiltro = document.querySelectorAll(".filter-btn");
+        var linksAreas = document.querySelectorAll(".sidebar-menu a[data-area]");
+        var botoesFechar = document.querySelectorAll(".close");
+
+        // Botão de entrar
+        if (botaoEntrar) {
+            botaoEntrar.addEventListener("click", function() {
+                if (janelaLogin) janelaLogin.style.display = "block";
+                console.log("Clicou no botão Entrar");
+            });
+        }
+
+        // Botão de registar
+        if (botaoRegistar) {
+            botaoRegistar.addEventListener("click", function() {
+                if (janelaRegisto) janelaRegisto.style.display = "block";
+                console.log("Clicou no botão Registar");
+            });
+        }
+
+        // Botão de sair
+        if (botaoSair) {
+            botaoSair.addEventListener("click", function() {
+                utilizador = null;
+                sessionStorage.removeItem("utilizador");
+                atualizarInterface();
+                var filtro = document.querySelector(".filter-btn.active")?.dataset.filter || "populares";
+                carregarPosts(filtro);
+                console.log("Clicou no botão Sair");
+            });
+        }
+
+        // Fechar janelas de login e registo
+        botoesFechar.forEach(botao => {
+            botao.addEventListener("click", function() {
+                if (janelaLogin) janelaLogin.style.display = "none";
+                if (janelaRegisto) janelaRegisto.style.display = "none";
+                console.log("Clicou para fechar uma janela");
+            });
+        });
+
+        // Fechar janelas ao clicar fora
+        window.addEventListener("click", function(evento) {
+            if (evento.target == janelaLogin) {
+                janelaLogin.style.display = "none";
+                console.log("Fechou login clicando fora");
+            }
+            if (evento.target == janelaRegisto) {
+                janelaRegisto.style.display = "none";
+                console.log("Fechou registo clicando fora");
+            }
+        });
+
+        // Formulário de login
+        if (formLogin) {
+            formLogin.addEventListener("submit", fazerLogin);
+            console.log("Formulário de login configurado");
+        }
+
+        // Formulário de registo
+        if (formRegisto) {
+            formRegisto.addEventListener("submit", fazerRegisto);
+            console.log("Formulário de registo configurado");
+        }
+
+        // Botão de criar post
+        if (botaoCriar) {
+            botaoCriar.addEventListener("click", function() {
+                if (formPost) formPost.classList.remove("hidden");
+                console.log("Clicou no botão Criar Publicação");
+            });
+        }
+
+        // Botão de cancelar post
+        if (botaoCancelar) {
+            botaoCancelar.addEventListener("click", function() {
+                if (formPost) formPost.classList.add("hidden");
+                if (formulario) formulario.reset();
+                console.log("Clicou no botão Cancelar post");
+            });
+        }
+
+        // Formulário de novo post
+        if (formulario) {
+            formulario.addEventListener("submit", criarNovoPost);
+            console.log("Formulário de novo post configurado");
+        }
+
+        // Link de notificações
+        if (linkNotificacoes) {
+            linkNotificacoes.addEventListener("click", function(evento) {
+                evento.preventDefault();
+                if (areaNotificacoes) {
+                    areaNotificacoes.style.display = areaNotificacoes.style.display == "none" ? "block" : "none";
+                    console.log(areaNotificacoes.style.display == "block" ? "Mostrou notificações" : "Escondeu notificações");
+                }
+            });
+        }
+
+        // Botões de filtro
+        botoesFiltro.forEach(botao => {
+            botao.addEventListener("click", function() {
+                botoesFiltro.forEach(b => b.classList.remove("active"));
+                this.classList.add("active");
+                var filtro = this.dataset.filter;
+                carregarPosts(filtro);
+                console.log("Clicou no filtro: " + filtro);
+            });
+        });
+
+        // Links de áreas
+        linksAreas.forEach(link => {
+            link.addEventListener("click", function(evento) {
+                evento.preventDefault();
+                var area = this.dataset.area;
+                if (area == "populares") {
+                    carregarPosts("populares");
+                } else if (area == "my-posts") {
+                    if (!utilizador) {
+                        alert("Faz login para ver os teus posts!");
+                        console.log("Tentou ver meus posts sem login");
+                        return;
+                    }
+                    carregarMeusPosts();
+                } else if (area != "all" && area != "explorar" && area != "saved") {
+                    carregarPostsPorArea(area);
+                }
+                console.log("Clicou na área: " + area);
+            });
+        });
+    } catch (erro) {
+        console.error("Erro ao configurar botões: ", erro);
     }
-    
-    // Adicionar novo utilizador
-    let newUser = { name, email, password, area };
-    users.push(newUser);
-    currentUser = newUser;
-    
-    showLoggedIn();
-    hideModal(registerModal);
-    registerForm.reset();
-    alert("Registo feito com sucesso!");
-  };
-  
-  postForm.onsubmit = function(e) {
-    e.preventDefault();
-    
-    let title = document.getElementById("post-title").value;
-    let content = document.getElementById("post-content").value;
-    
-    createNewPost(title, content);
-    postForm.reset();
-    alert("Post criado!");
-  };
-  
-  // Fechar modais
-  document.querySelectorAll(".close").forEach(btn => {
-    btn.onclick = function() {
-      let modal = this.closest(".modal");
-      hideModal(modal);
-    };
-  });
-  
-  // Filtros
-  document.querySelectorAll(".filter-btn").forEach(btn => {
-    btn.onclick = function() {
-      document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
-      this.classList.add("active");
-    };
-  });
-  
-  // Funções para mostrar/esconder elementos
-  function showModal(modal) {
-    modal.classList.remove("hide");
-  }
-  
-  function hideModal(modal) {
-    modal.classList.add("hide");
-  }
-  
-  function showLoggedIn() {
-    // Esconder botões de auth
-    authButtons.classList.add("hide");
-    
-    // Mostrar info do utilizador
-    userInfo.classList.remove("hide");
-    userName.textContent = "Olá, " + currentUser.name;
-    
-    // Mostrar área de criar post
-    createPost.classList.remove("hide");
-  }
-  
-  function showLoggedOut() {
-    // Mostrar botões de auth
-    authButtons.classList.remove("hide");
-    
-    // Esconder info do utilizador
-    userInfo.classList.add("hide");
-    
-    // Esconder área de criar post
-    createPost.classList.add("hide");
-  }
-  
-  function initializeExistingPosts() {
-    // Dar ID aos posts existentes e adicionar funcionalidade de voto
-    let existingPosts = document.querySelectorAll(".post:not(.create-post)");
-    existingPosts.forEach((post, index) => {
-      let postId = "existing-" + index;
-      post.setAttribute("data-post-id", postId);
-      postVotes[postId] = { totalVotes: 0 };
-      
-      // Encontrar botão de voto
-      let voteBtn = post.querySelector(".action-btn");
-      if (voteBtn && voteBtn.textContent.includes("Votar")) {
-        voteBtn.className = "action-btn vote-btn";
-        voteBtn.onclick = function() {
-          handleVote(postId, this);
-        };
-      }
-    });
-  }
-  
-  function createNewPost(title, content) {
-    // Criar ID único para o post
-    let postId = Date.now().toString();
-    
-    // Criar novo elemento post
-    let postDiv = document.createElement("div");
-    postDiv.className = "post";
-    postDiv.setAttribute("data-post-id", postId);
-    
-    // Inicializar votos para este post
-    postVotes[postId] = { totalVotes: 0 };
-    
-    // Criar header do post
-    let postHeader = document.createElement("div");
-    postHeader.className = "post-header";
-    
-    let postAuthor = document.createElement("div");
-    postAuthor.className = "post-author";
-    postAuthor.textContent = currentUser.name;
-    
-    let postMeta = document.createElement("div");
-    postMeta.className = "post-meta";
-    postMeta.textContent = currentUser.area + " • agora";
-    
-    postHeader.appendChild(postAuthor);
-    postHeader.appendChild(postMeta);
-    
-    // Criar título
-    let postTitle = document.createElement("h3");
-    postTitle.textContent = title;
-    
-    // Criar conteúdo
-    let postContent = document.createElement("p");
-    postContent.textContent = content;
-    
-    // Criar ações do post
-    let postActions = document.createElement("div");
-    postActions.className = "post-actions";
-    
-    let voteBtn = document.createElement("button");
-    voteBtn.className = "action-btn vote-btn";
-    voteBtn.textContent = "Votar (0)";
-    voteBtn.onclick = function() {
-      handleVote(postId, this);
-    };
-    
-    let commentBtn = document.createElement("button");
-    commentBtn.className = "action-btn";
-    commentBtn.textContent = "Comentar (0)";
-    
-    let saveBtn = document.createElement("button");
-    saveBtn.className = "action-btn";
-    saveBtn.textContent = "Guardar";
-    
-    postActions.appendChild(voteBtn);
-    postActions.appendChild(commentBtn);
-    postActions.appendChild(saveBtn);
-    
-    // Montar o post
-    postDiv.appendChild(postHeader);
-    postDiv.appendChild(postTitle);
-    postDiv.appendChild(postContent);
-    postDiv.appendChild(postActions);
-    
-    // Adicionar ao feed
-    let feed = document.querySelector(".feed");
-    let firstPost = document.querySelector(".post:not(.create-post)");
-    if (firstPost) {
-      feed.insertBefore(postDiv, firstPost);
-    } else {
-      feed.appendChild(postDiv);
-    }
-  }
-  
-  function handleVote(postId, button) {
-    // Verificar se está logado
-    if (!currentUser) {
-      alert("Precisas fazer login para votar!");
-      console.log(postVotes);
-      return;
-    }
-    
-    let userEmail = currentUser.email;
-    
-    // Verificar se o utilizador já votou neste post
-    if (postVotes[postId][userEmail]) {
-      // Remover voto
-      postVotes[postId][userEmail] = false;
-      postVotes[postId].totalVotes--;
-      button.classList.remove("voted");
-    } else {
-      // Adicionar voto
-      postVotes[postId][userEmail] = true;
-      postVotes[postId].totalVotes++;
-      button.classList.add("voted");
-    }
-    
-    // Atualizar texto do botão
-    button.textContent = "Votar (" + postVotes[postId].totalVotes + ")";
-  }
-});
+}
+
+// Ao carregar a página, chama a função comecar
+document.addEventListener("DOMContentLoaded", comecar);
